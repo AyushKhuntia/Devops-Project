@@ -42,13 +42,25 @@ pipeline {
             }
         }
 
+        stage('Load Image to Kind') {
+            steps {
+                bat "docker save ${DOCKER_IMAGE}:latest -o rfq-auction.tar"
+                bat "docker exec -i desktop-worker ctr -n k8s.io images import - < rfq-auction.tar"
+                bat "docker exec -i desktop-worker2 ctr -n k8s.io images import - < rfq-auction.tar"
+                bat "docker exec -i desktop-control-plane ctr -n k8s.io images import - < rfq-auction.tar"
+                bat "del rfq-auction.tar"
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
                     if (isUnix()) {
                         sh "kubectl apply -f ${K8S_DEPLOYMENT_FILE}"
+                        sh "kubectl rollout restart deployment/rfq-auction-deployment"
                     } else {
                         bat "kubectl apply -f ${K8S_DEPLOYMENT_FILE}"
+                        bat "kubectl rollout restart deployment/rfq-auction-deployment"
                     }
                 }
             }
