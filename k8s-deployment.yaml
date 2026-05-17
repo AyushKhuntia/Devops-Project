@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rfq-auction-deployment
+  labels:
+    app: rfq-auction
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rfq-auction
+  template:
+    metadata:
+      labels:
+        app: rfq-auction
+    spec:
+      containers:
+      - name: rfq-auction
+        image: rfq-auction:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rfq-auction-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: rfq-auction
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
