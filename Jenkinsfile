@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'maven3'
+    }
+
     environment {
         DOCKER_IMAGE = 'rfq-auction'
         K8S_DEPLOYMENT_FILE = 'k8s-deployment.yaml'
