@@ -8,6 +8,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'rfq-auction'
         K8S_DEPLOYMENT_FILE = 'k8s-deployment.yaml'
+        KUBECONFIG = 'C:/Users/hp/.kube/config'
     }
 
     stages {
